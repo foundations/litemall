@@ -2,7 +2,7 @@
   <div class="tabbar-user">
     <user-header :isLogin="isLogin"/>
     <order-group/>
-    <ecoupon-group/>
+    <coupon-group/>
     <user-module/>
     <van-button size="large" class="tabbar-user__quit" v-if="isLogin" @click="quit">退出当前账户</van-button>
   </div>
@@ -11,10 +11,11 @@
 <script>
 import userHeader from './tabbar-user-header';
 import orderGroup from './tabbar-user-order';
-// import ecouponGroup from './tabbar-user-ecoupon';
+import couponGroup from './tabbar-user-coupon';
 import userModule from './tabbar-user-module';
 
-import { removeLocalStorage } from 'core/utils/local-storage';
+import { removeLocalStorage } from '@/utils/local-storage';
+import { authLogout } from '@/api/api';
 
 export default {
   data() {
@@ -29,26 +30,19 @@ export default {
 
   methods: {
     quit() {
-      removeLocalStorage(
-        'Authorization',
-        'user_id',
-        'avatar',
-        'background_image',
-        'nickName'
-      );
+      authLogout();
       this.$router.push({ name: 'login' });
     },
     getLoginStatus() {
       this.isLogin =
-        !!localStorage.getItem('Authorization') &&
-        !!localStorage.getItem('user_id');
+        !!localStorage.getItem('Authorization');
     }
   },
 
   components: {
     [userHeader.name]: userHeader,
     [orderGroup.name]: orderGroup,
-    // [ecouponGroup.name]: ecouponGroup,
+    [couponGroup.name]: couponGroup,
     [userModule.name]: userModule
   }
 };

@@ -43,10 +43,10 @@
 </template>
 
 <script>
-import { REFUND_LIST } from '@/api/order';
+import { REFUND_LIST } from '@/api/api';
 
 import { Tab, Tabs, Panel, Card, List } from 'vant';
-import InfinityScroll from '@/vue/components/infinity-scroll';
+import InfinityScroll from '@/components/infinity-scroll';
 
 const STATUS_TEXT = {
   10: '退款中',

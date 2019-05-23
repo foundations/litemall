@@ -1,6 +1,5 @@
 package org.linlinjava.litemall.admin.web;
 
-import com.github.pagehelper.PageInfo;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.SecurityUtils;
@@ -21,9 +20,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.linlinjava.litemall.admin.util.AdminResponseCode.*;
 
@@ -47,12 +44,7 @@ public class AdminAdminController {
                        @Sort @RequestParam(defaultValue = "add_time") String sort,
                        @Order @RequestParam(defaultValue = "desc") String order) {
         List<LitemallAdmin> adminList = adminService.querySelective(username, page, limit, sort, order);
-        long total = PageInfo.of(adminList).getTotal();
-        Map<String, Object> data = new HashMap<>();
-        data.put("total", total);
-        data.put("items", adminList);
-
-        return ResponseUtil.ok(data);
+        return ResponseUtil.okList(adminList);
     }
 
     private Object validate(LitemallAdmin admin) {
@@ -116,10 +108,8 @@ public class AdminAdminController {
             return ResponseUtil.badArgument();
         }
 
-        String rawPassword = admin.getPassword();
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        String encodedPassword = encoder.encode(rawPassword);
-        admin.setPassword(encodedPassword);
+        // 不允许管理员通过编辑接口修改密码
+        admin.setPassword(null);
 
         if (adminService.updateById(admin) == 0) {
             return ResponseUtil.updatedDataFailed();
